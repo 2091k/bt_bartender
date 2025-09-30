@@ -1,4 +1,3 @@
-# 下载 URL
 $url = "http://app.2091k.cn/bt/bt.exe"
 
 function Format-Size($bytes) {
@@ -13,12 +12,12 @@ function Format-Size($bytes) {
     }
 }
 
-# 列出可用盘符
+
 $drives = Get-PSDrive -PSProvider FileSystem | Select-Object -ExpandProperty Name
 Write-Host "可用分区: " ($drives -join "  ")
 $selection = Read-Host "请输入要保存文件的盘符字母"
 
-# 转大写
+
 $selection = $selection.ToUpper()
 
 if (-not ($drives -contains $selection)) {
@@ -26,19 +25,19 @@ if (-not ($drives -contains $selection)) {
     exit
 }
 
-# 主目录: 盘符:\bartender
+
 $bartenderDir = Join-Path "$selection`:\" "bartender"
 if (-not (Test-Path $bartenderDir)) {
     New-Item -Path $bartenderDir -ItemType Directory -Force | Out-Null
 }
 
-# 在 bartender 目录下新建 bt 文件夹 (但不放 exe)
+
 $btSubDir = Join-Path $bartenderDir "bt"
 if (-not (Test-Path $btSubDir)) {
     New-Item -Path $btSubDir -ItemType Directory -Force | Out-Null
 }
 
-# 文件下载路径 (直接放在 bartender 目录下)
+
 $savePath = Join-Path $bartenderDir "bt.exe"
 
 try {
@@ -49,7 +48,7 @@ try {
     $stream = $response.GetResponseStream()
     $fileStream = [System.IO.File]::Create($savePath)
 
-    # 已知文件大小 (11.9MB)
+
     $totalBytes = 12522703
     $totalSize = Format-Size $totalBytes
 
@@ -72,7 +71,7 @@ try {
 
     Write-Host "下载完成！文件已保存到 $savePath"
 
-    # 下载完成后打开 bartender 文件夹
+
     Start-Process -FilePath $bartenderDir
 }
 catch {
