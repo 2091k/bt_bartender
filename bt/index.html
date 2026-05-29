@@ -84,16 +84,17 @@ th{background:#f8f9fa}
 </div>
 
 <script>
-// ============ 配置项（只改这里！） ============
-const USERNAME = "2091k";          // 你的GitHub用户名
-const REPO     = "bt bartender";   // 你的仓库名（带空格也没问题，代码会自动处理）
-const TOKEN    = "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"; // 你的GitHub Token
-const ADMIN_PASS = "a4787614";    // 后台登录密码
-const API_PROXY = "https://jasu.2091k.cn/https://api.github.com"; // 你的加速域名
+// ============ 配置项（仅修改此处） ============
+const USERNAME = "2091k";
+const REPO     = "bt bartender";
+const TOKEN    = "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";
+const ADMIN_PASS = "a4787614";
+const API_PROXY = "https://jasu.2091k.cn/https://api.github.com";
 // ==============================================
 
 const FILE_PATH = "login.txt";
 let sha = "";
+let fileCache = ""; // 本地缓存文件内容，减少接口请求
 let loginStatus = localStorage.getItem("login") === "ok";
 
 if(loginStatus){
@@ -137,47 +138,56 @@ function toggleSidebar(){
   document.getElementById("sidebar").classList.toggle("collapsed");
 }
 
-// --- 读取文件（带认证 + 加速代理 + 错误处理） ---
-async function getFile(){
-  // 自动编码仓库名和文件路径，处理空格问题
+// 统一请求头（保证认证生效）
+function getHeaders(){
+  return {
+    "Authorization": "token " + TOKEN,
+    "Accept": "application/vnd.github.v3+json",
+    "Content-Type": "application/json"
+  };
+}
+
+// 读取文件 + 缓存
+async function getFile(force = false){
+  // 非强制刷新，优先用本地缓存
+  if(!force && fileCache){
+    return fileCache;
+  }
   const encodedRepo = encodeURIComponent(REPO);
   const encodedPath = encodeURIComponent(FILE_PATH);
   const api = `${API_PROXY}/repos/${USERNAME}/${encodedRepo}/contents/${encodedPath}`;
   
   try {
-    const res = await fetch(api,{
-      headers: {
-        "Authorization": "token " + TOKEN,
-        "Accept": "application/vnd.github.v3+json"
-      }
-    });
-    
+    const res = await fetch(api,{ headers: getHeaders() });
     if(!res.ok){
+      const resJson = await res.json();
+      // 识别限流错误
+      if(resJson.message && resJson.message.includes("rate limit exceeded")){
+        showError("GitHub API 访问限流，请稍后再试！");
+        return "";
+      }
       if(res.status === 401){
-        showError("认证失败：Token无效或权限不足，请检查Token配置");
+        showError("认证失败：Token 无效或权限不足");
       } else if(res.status === 404){
-        showError("文件/仓库不存在：请检查仓库名和文件路径是否正确");
+        showError("文件/仓库不存在");
       } else {
         showError(`读取失败：HTTP ${res.status}`);
       }
       return "";
     }
-    
     const json = await res.json();
-    if(!json || !json.content){
-      showError("文件内容为空或格式错误");
-      return "";
-    }
+    if(!json || !json.content) return "";
     sha = json.sha;
-    return atob(json.content.replace(/\n/g,""));
+    fileCache = atob(json.content.replace(/\n/g,""));
+    return fileCache;
   } catch(e){
-    showError("网络错误：请求失败，请检查网络或加速代理配置");
+    showError("网络请求失败，请检查代理或网络");
     console.error(e);
     return "";
   }
 }
 
-// --- 写入文件（带认证 + 加速代理 + 错误处理） ---
+// 写入文件，写入后更新本地缓存
 async function saveFile(content){
   const encodedRepo = encodeURIComponent(REPO);
   const encodedPath = encodeURIComponent(FILE_PATH);
@@ -186,36 +196,36 @@ async function saveFile(content){
   try {
     const res = await fetch(api,{
       method: "PUT",
-      headers: {
-        "Authorization": "token " + TOKEN,
-        "Accept": "application/vnd.github.v3+json",
-        "Content-Type": "application/json"
-      },
+      headers: getHeaders(),
       body: JSON.stringify({
-        message: "update",
+        message: "update data",
         content: btoa(unescape(encodeURIComponent(content))),
         sha: sha
       })
     });
-    
     if(!res.ok){
+      const resJson = await res.json();
+      if(resJson.message && resJson.message.includes("rate limit exceeded")){
+        showError("GitHub API 访问限流，请稍后再试！");
+        return false;
+      }
       if(res.status === 401){
-        showError("认证失败：Token无效或权限不足，请检查Token配置");
-      } else {
-        showError(`保存失败：HTTP ${res.status}`);
+        showError("认证失败：Token 无效");
       }
       return false;
     }
+    // 写入成功，更新缓存
+    fileCache = content;
     return true;
   } catch(e){
-    showError("网络错误：请求失败，请检查网络或加速代理配置");
+    showError("网络请求失败");
     console.error(e);
     return false;
   }
 }
 
 async function loadData(){
-  const text = await getFile();
+  const text = await getFile(true); // 列表刷新强制拉取最新
   const lines = text.split("\n").filter(i=>i.trim());
   let html = `<tr><th>序列号</th><th>备注</th><th>操作</th></tr>`;
   lines.forEach(line=>{
@@ -237,7 +247,8 @@ async function addSingle(){
   if(!sn)return;
   const text = await getFile();
   if(text.includes(sn+"|")){showMsg("已存在");return}
-  const ok = await saveFile(sn + "\n" + text);
+  const newContent = sn + "\n" + text;
+  const ok = await saveFile(newContent);
   if(ok){
     showMsg("添加成功");
     loadData();
@@ -252,9 +263,10 @@ async function addBatch(){
   const oldList = old.split("\n").map(i=>i.split("|")[0]);
   const add = items.filter(i=>!oldList.includes(i));
   if(!add.length){showMsg("无新数据");return}
-  const ok = await saveFile(add.join("\n") + "\n" + old);
+  const newContent = add.join("\n") + "\n" + old;
+  const ok = await saveFile(newContent);
   if(ok){
-    showMsg("成功添加"+add.length+"条");
+    showMsg(`成功添加${add.length}条`);
     loadData();
   }
 }
@@ -266,14 +278,16 @@ async function saveNote(sn){
     if(line.startsWith(sn+"|") || line === sn) return sn + "|" + val;
     return line;
   });
-  const ok = await saveFile(arr.join("\n"));
+  const newContent = arr.join("\n");
+  const ok = await saveFile(newContent);
   if(ok) showMsg("备注已保存");
 }
 
 async function del(sn){
   if(!confirm("确定删除？"))return;
   let arr = (await getFile()).split("\n").filter(i=>!i.startsWith(sn+"|") && i!==sn);
-  const ok = await saveFile(arr.join("\n"));
+  const newContent = arr.join("\n");
+  const ok = await saveFile(newContent);
   if(ok){
     showMsg("删除成功");
     loadData();
