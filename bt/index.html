@@ -2,51 +2,50 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>激活码管理系统</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>激活码管理</title>
 <style>
-  *{margin:0;padding:0;box-sizing:border-box}
-  body{background:#f5f7fa;font-size:14px;font-family:"Microsoft YaHei",sans-serif}
-  .container{display:flex;min-height:100vh;position:relative}
-  @media(max-width:768px){.container{flex-direction:column}}
-  .sidebar{width:220px;background:#2c3e50;color:#fff;padding:15px 0;flex-shrink:0;transition:.3s;position:relative}
-  .sidebar.collapsed{width:70px}
-  .sidebar-header{padding:0 15px 12px;margin-bottom:12px;border-bottom:1px dashed #445;font-size:16px;white-space:nowrap;cursor:pointer;display:flex;align-items:center;gap:8px}
-  .sidebar.collapsed .sidebar-header span.text{display:none}
-  .sidebar.collapsed .sidebar-header{justify-content:center;padding:0 5px 12px}
-  .menu-item{padding:12px 15px;cursor:pointer;border-left:3px solid transparent;margin-bottom:4px;transition:.2s;display:flex;align-items:center;gap:8px;white-space:nowrap}
-  .menu-item .icon{font-size:16px;width:20px;text-align:center}
-  .sidebar.collapsed .menu-item{justify-content:center;padding:12px 5px}
-  .sidebar.collapsed .menu-item .text{display:none}
-  .menu-item.active{background:#34495e;border-left:3px solid #3498db}
-  .menu-item:hover{background:#34495e}
-  .content{flex:1;padding:15px}
-  .content-title{font-size:18px;margin-bottom:15px;color:#333;font-weight:700}
-  .box{background:#fff;padding:15px;margin-bottom:15px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
-  .panel{display:none}
-  .panel.active{display:block}
-  input,textarea{padding:8px 10px;margin:6px 0;width:100%;max-width:380px;border:1px solid #ddd;border-radius:4px}
-  textarea{min-height:80px}
-  button{padding:8px 16px;background:#007bff;color:#fff;border:none;border-radius:4px;cursor:pointer;margin:6px 4px}
-  .green{background:#28a745}
-  .del-btn{background:#dc3545;padding:4px 10px;font-size:12px}
-  .table-wrap{overflow-x:auto}
-  table{border-collapse:collapse;width:100%;min-width:650px}
-  td,th{border:1px solid #ddd;padding:8px;text-align:center}
-  th{background:#f8f9fa}
-  .msg{background:#d4edda;color:#155724;padding:8px 12px;border-radius:4px;margin-bottom:10px}
-  .tip{background:#f8f9fa;padding:10px;border-radius:4px;font-size:12px;color:#666;margin-top:10px}
-  .login-mask{position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,#42a5f5,#4789d4);display:flex;align-items:center;justify-content:center;z-index:9999}
-  .login-box{background:#fff;width:100%;max-width:400px;padding:40px 30px;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.15)}
-  .input-item{margin-bottom:20px}
-  .input-item label{display:block;margin-bottom:8px;color:#555}
-  .error{color:#f44336;text-align:center;margin-top:15px}
-  .logout-fixed{position:absolute;top:15px;right:20px;z-index:99}
-  .logout-fixed a{color:#ff6b6b;text-decoration:none;cursor:pointer}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#f5f7fa;font-size:14px;font-family:"Microsoft YaHei",sans-serif}
+.container{display:flex;min-height:100vh;position:relative}
+@media(max-width:768px){.container{flex-direction:column}}
+.sidebar{width:220px;background:#2c3e50;color:#fff;padding:15px 0;flex-shrink:0;transition:.3s;position:relative}
+.sidebar.collapsed{width:70px}
+.sidebar-header{padding:0 15px 12px;margin-bottom:12px;border-bottom:1px dashed #445;font-size:16px;white-space:nowrap;cursor:pointer;display:flex;align-items:center;gap:8px}
+.sidebar.collapsed .sidebar-header span.text{display:none}
+.sidebar.collapsed .sidebar-header{justify-content:center;padding:0 5px 12px}
+.menu-item{padding:12px 15px;cursor:pointer;border-left:3px solid transparent;margin-bottom:4px;transition:.2s;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.menu-item .icon{font-size:16px;width:20px;text-align:center}
+.sidebar.collapsed .menu-item{justify-content:center;padding:12px 5px}
+.sidebar.collapsed .menu-item .text{display:none}
+.menu-item.active{background:#34495e;border-left:3px solid #3498db}
+.menu-item:hover{background:#34495e}
+.content{flex:1;padding:15px}
+.content-title{font-size:18px;margin-bottom:15px;color:#333;font-weight:700}
+.box{background:#fff;padding:15px;margin-bottom:15px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.panel{display:none}
+.panel.active{display:block}
+input,textarea{padding:8px 10px;margin:6px 0;width:100%;max-width:380px;border:1px solid #ddd;border-radius:4px}
+textarea{min-height:80px}
+button{padding:8px 16px;background:#007bff;color:#fff;border:none;border-radius:4px;cursor:pointer;margin:6px 4px}
+.green{background:#28a745}
+.del-btn{background:#dc3545;padding:4px 10px;font-size:12px}
+.table-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:650px}
+td,th{border:1px solid #ddd;padding:8px;text-align:center}
+th{background:#f8f9fa}
+.msg{background:#d4edda;color:#155724;padding:8px 12px;border-radius:4px;margin-bottom:10px}
+.error-tip{background:#f8d7da;color:#721c24;padding:8px 12px;border-radius:4px;margin-bottom:10px}
+.login-mask{position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,#42a5f5,#4789d4);display:flex;align-items:center;justify-content:center;z-index:9999}
+.login-box{background:#fff;width:100%;max-width:400px;padding:40px 30px;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.15)}
+.input-item{margin-bottom:20px}
+.input-item label{display:block;margin-bottom:8px;color:#555}
+.error{color:#f44336;text-align:center;margin-top:15px}
+.logout-fixed{position:absolute;top:15px;right:20px;z-index:99}
+.logout-fixed a{color:#ff6b6b;text-decoration:none;cursor:pointer}
 </style>
 </head>
 <body>
-
 <div class="login-mask" id="loginMask">
   <div class="login-box">
     <h2>管理员登录</h2>
@@ -64,40 +63,36 @@
     <div class="menu-item active" onclick="show('list')">📋 <span class="text">列表</span></div>
     <div class="menu-item" onclick="show('add')">➕ <span class="text">单个添加</span></div>
     <div class="menu-item" onclick="show('batch')">📄 <span class="text">批量添加</span></div>
-    <div class="menu-item" onclick="show('api')">📡 <span class="text">API说明</span></div>
   </div>
 
   <div class="content">
     <div id="msg" class="msg" style="display:none"></div>
-
+    <div id="errorMsg" class="error-tip" style="display:none"></div>
     <div class="panel active" id="list">
       <div class="content-title">激活码列表</div>
       <div class="box"><div class="table-wrap"><table id="table"></table></div></div>
     </div>
-
     <div class="panel" id="add">
       <div class="content-title">单个添加</div>
       <div class="box"><input id="sn" placeholder="输入序列号"><button onclick="addSingle()" class="green">添加</button></div>
     </div>
-
     <div class="panel" id="batch">
       <div class="content-title">批量添加</div>
       <div class="box"><textarea id="batchText" placeholder="一行一个"></textarea><br><button onclick="addBatch()" class="green">导入</button></div>
     </div>
-
-    <div class="panel" id="api">
-      <div class="content-title">API说明</div>
-      <div class="box"><div class="tip">
-        接口可自己部署<br>
-        格式：serial|设备ID|时间|状态|备注<br>
-        未激活 = 只有serial
-      </div></div>
-    </div>
   </div>
 </div>
 
-<script src="github-config.js"></script>
 <script>
+// ============ 配置项（只改这里！） ============
+const USERNAME = "2091k";          // 你的GitHub用户名
+const REPO     = "bt bartender";   // 你的仓库名（带空格也没问题，代码会自动处理）
+const TOKEN    = "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"; // 你的GitHub Token
+const ADMIN_PASS = "a4787614";    // 后台登录密码
+const API_PROXY = "https://jasu.2091k.cn/https://api.github.com"; // 你的加速域名
+// ==============================================
+
+const FILE_PATH = "login.txt";
 let sha = "";
 let loginStatus = localStorage.getItem("login") === "ok";
 
@@ -107,94 +102,146 @@ if(loginStatus){
 }
 
 function login(){
-  const u = document.getElementById("user").value;
-  const p = document.getElementById("pass").value;
-  if(u === GITHUB_CONFIG.adminUser && p === GITHUB_CONFIG.adminPass){
+  const u = document.getElementById("user").value.trim();
+  const p = document.getElementById("pass").value.trim();
+  if(u === "admin" && p === ADMIN_PASS){
     localStorage.setItem("login","ok");
     location.reload();
   }else{
     document.getElementById("err").innerText = "账号或密码错误";
   }
 }
-
 function logout(){
   localStorage.removeItem("login");
   location.reload();
 }
-
 function showMsg(text){
   const m = document.getElementById("msg");
   m.innerText = text;
   m.style.display = "block";
   setTimeout(()=>m.style.display="none",2000);
 }
-
+function showError(text){
+  const m = document.getElementById("errorMsg");
+  m.innerText = text;
+  m.style.display = "block";
+  setTimeout(()=>m.style.display="none",5000);
+}
 function show(p){
   document.querySelectorAll(".panel").forEach(i=>i.classList.remove("active"));
   document.querySelectorAll(".menu-item").forEach(i=>i.classList.remove("active"));
   document.getElementById(p).classList.add("active");
   event.target.closest(".menu-item").classList.add("active");
 }
-
 function toggleSidebar(){
   document.getElementById("sidebar").classList.toggle("collapsed");
 }
 
+// --- 读取文件（带认证 + 加速代理 + 错误处理） ---
 async function getFile(){
-  const api = `https://api.github.com/repos/${GITHUB_CONFIG.username}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.filePath}`;
-  const res = await fetch(api,{
-    headers:{Authorization:"token "+GITHUB_CONFIG.token}
-  });
-  const json = await res.json();
-  sha = json.sha;
-  return atob(json.content.replace(/\n/g,""));
+  // 自动编码仓库名和文件路径，处理空格问题
+  const encodedRepo = encodeURIComponent(REPO);
+  const encodedPath = encodeURIComponent(FILE_PATH);
+  const api = `${API_PROXY}/repos/${USERNAME}/${encodedRepo}/contents/${encodedPath}`;
+  
+  try {
+    const res = await fetch(api,{
+      headers: {
+        "Authorization": "token " + TOKEN,
+        "Accept": "application/vnd.github.v3+json"
+      }
+    });
+    
+    if(!res.ok){
+      if(res.status === 401){
+        showError("认证失败：Token无效或权限不足，请检查Token配置");
+      } else if(res.status === 404){
+        showError("文件/仓库不存在：请检查仓库名和文件路径是否正确");
+      } else {
+        showError(`读取失败：HTTP ${res.status}`);
+      }
+      return "";
+    }
+    
+    const json = await res.json();
+    if(!json || !json.content){
+      showError("文件内容为空或格式错误");
+      return "";
+    }
+    sha = json.sha;
+    return atob(json.content.replace(/\n/g,""));
+  } catch(e){
+    showError("网络错误：请求失败，请检查网络或加速代理配置");
+    console.error(e);
+    return "";
+  }
 }
 
+// --- 写入文件（带认证 + 加速代理 + 错误处理） ---
 async function saveFile(content){
-  const api = `https://api.github.com/repos/${GITHUB_CONFIG.username}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.filePath}`;
-  await fetch(api,{
-    method:"PUT",
-    headers:{Authorization:"token "+GITHUB_CONFIG.token},
-    body:JSON.stringify({
-      message:"update",
-      content:btoa(unescape(encodeURIComponent(content))),
-      sha:sha
-    })
-  });
+  const encodedRepo = encodeURIComponent(REPO);
+  const encodedPath = encodeURIComponent(FILE_PATH);
+  const api = `${API_PROXY}/repos/${USERNAME}/${encodedRepo}/contents/${encodedPath}`;
+  
+  try {
+    const res = await fetch(api,{
+      method: "PUT",
+      headers: {
+        "Authorization": "token " + TOKEN,
+        "Accept": "application/vnd.github.v3+json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        message: "update",
+        content: btoa(unescape(encodeURIComponent(content))),
+        sha: sha
+      })
+    });
+    
+    if(!res.ok){
+      if(res.status === 401){
+        showError("认证失败：Token无效或权限不足，请检查Token配置");
+      } else {
+        showError(`保存失败：HTTP ${res.status}`);
+      }
+      return false;
+    }
+    return true;
+  } catch(e){
+    showError("网络错误：请求失败，请检查网络或加速代理配置");
+    console.error(e);
+    return false;
+  }
 }
 
 async function loadData(){
   const text = await getFile();
   const lines = text.split("\n").filter(i=>i.trim());
-  let html = `<tr><th>序列号</th><th>设备ID</th><th>激活时间</th><th>状态</th><th>备注</th><th>操作</th></tr>`;
+  let html = `<tr><th>序列号</th><th>备注</th><th>操作</th></tr>`;
   lines.forEach(line=>{
     const a = line.split("|");
     const sn = a[0]||"";
-    const d = a[1]||"-";
-    const t = a[2]||"-";
-    const s = a[3]||"未激活";
-    const n = a[4]||"";
+    const note = a[1]||"";
     html += `<tr>
       <td>${sn}</td>
-      <td>${d}</td>
-      <td>${t}</td>
-      <td>${s}</td>
-      <td><input id="n_${sn}" value="${n}" style="width:100px"><button onclick="saveNote('${sn}')">存</button></td>
+      <td><input id="n_${sn}" value="${note}" style="width:100px"><button onclick="saveNote('${sn}')">存</button></td>
       <td><button class="del-btn" onclick="del('${sn}')">删</button></td>
     </tr>`;
   });
-  if(!lines.length) html += `<tr><td colspan=6>暂无数据</td></tr>`;
+  if(!lines.length) html += `<tr><td colspan=3>暂无数据</td></tr>`;
   document.getElementById("table").innerHTML = html;
 }
 
 async function addSingle(){
   const sn = document.getElementById("sn").value.trim();
   if(!sn)return;
-  const t = await getFile();
-  if(t.includes(sn+"|")){showMsg("已存在");return}
-  await saveFile(sn + "\n" + t);
-  showMsg("添加成功");
-  loadData();
+  const text = await getFile();
+  if(text.includes(sn+"|")){showMsg("已存在");return}
+  const ok = await saveFile(sn + "\n" + text);
+  if(ok){
+    showMsg("添加成功");
+    loadData();
+  }
 }
 
 async function addBatch(){
@@ -202,34 +249,35 @@ async function addBatch(){
   if(!text)return;
   const items = text.split("\n").map(i=>i.trim()).filter(i=>i);
   const old = await getFile();
-  const lines = old.split("\n").map(i=>i.split("|")[0]);
-  const newItems = items.filter(i=>!lines.includes(i));
-  if(!newItems.length){showMsg("无新数据");return}
-  await saveFile(newItems.join("\n") + "\n" + old);
-  showMsg("成功添加"+newItems.length+"条");
-  loadData();
+  const oldList = old.split("\n").map(i=>i.split("|")[0]);
+  const add = items.filter(i=>!oldList.includes(i));
+  if(!add.length){showMsg("无新数据");return}
+  const ok = await saveFile(add.join("\n") + "\n" + old);
+  if(ok){
+    showMsg("成功添加"+add.length+"条");
+    loadData();
+  }
 }
 
 async function saveNote(sn){
-  const val = document.getElementById("n_"+sn).value;
+  const val = document.getElementById("n_"+sn).value.trim();
   let arr = (await getFile()).split("\n");
   arr = arr.map(line=>{
-    if(line.startsWith(sn+"|")){
-      const a = line.split("|");
-      return a.length>=4 ? `${a[0]}|${a[1]}|${a[2]}|${a[3]}|${val}` : `${a[0]}|${val}`;
-    }
+    if(line.startsWith(sn+"|") || line === sn) return sn + "|" + val;
     return line;
   });
-  await saveFile(arr.join("\n"));
-  showMsg("保存成功");
+  const ok = await saveFile(arr.join("\n"));
+  if(ok) showMsg("备注已保存");
 }
 
 async function del(sn){
   if(!confirm("确定删除？"))return;
-  let arr = (await getFile()).split("\n").filter(i=>!i.startsWith(sn+"|"));
-  await saveFile(arr.join("\n"));
-  showMsg("删除成功");
-  loadData();
+  let arr = (await getFile()).split("\n").filter(i=>!i.startsWith(sn+"|") && i!==sn);
+  const ok = await saveFile(arr.join("\n"));
+  if(ok){
+    showMsg("删除成功");
+    loadData();
+  }
 }
 </script>
 </body>
